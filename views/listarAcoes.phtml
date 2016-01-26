@@ -1,0 +1,228 @@
+﻿<?php
+$v_params = $this->getParams();
+$v_acoes = $v_params['v_acoes'];
+$v_perspectivas = $v_params['v_perspectivas'];
+$v_temas = $v_params['v_temas'];
+$v_objetivos = $v_params['v_objetivos'];
+$v_iniciativas = $v_params['v_iniciativas'];
+$v_filtroacoes = $v_params['v_filtroacoes'];
+//echo "<pre>";print_r($_REQUEST);echo "</pre>";
+?>
+<!DOCTYPE html>
+<html lang="pt-BR">
+    <head>
+        <meta charset="utf-8" />
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+        <title>
+            Relatório de Ações
+        </title>        
+        <link rel="stylesheet" media="all" href="template/css/default.css" />
+        <script src='template/js/fullcalendar/lib/jquery.min.js'></script>
+        <script type="text/javascript" src="template/js/select2/js/select2.full.min.js"></script>
+        <link rel="stylesheet" media="all" href="template/js/select2/css/select2.min.css" />
+        <script>
+            $(document).ready(function () {
+                $("#linhaTema").hide();
+                $("#linhaObjetivo").hide();
+                $("#linhaIniciativa").hide();
+                //$("#linhaAcao").hide();
+                $("#perspectiva").select2();
+                $("#tema").select2();
+                $("#objetivo").select2();
+                $("#iniciativa").select2();
+                $("#filtroacao").select2();
+<?php echo (isset($_REQUEST['perspectiva']) && !empty($_REQUEST['perspectiva']) ? '$("#linhaTema").show();' : "") ?>
+<?php echo (isset($_REQUEST['tema']) && !empty($_REQUEST['tema']) ? '$("#linhaObjetivo").show();' : "") ?>
+<?php echo (isset($_REQUEST['objetivo']) && !empty($_REQUEST['objetivo']) ? '$("#linhaIniciativa").show();' : "") ?>
+<?php echo (isset($_REQUEST['iniciativa']) && !empty($_REQUEST['iniciativa']) ? '$("#linhaFiltroacao").show();' : "") ?>
+
+<?php //echo (isset($_REQUEST['filtroacao']) ? '$("#linhaAcao").show();' : "")   ?>
+
+                $("#perspectiva").change(function () {
+                    $("#tema").val("").trigger("change");
+                    $("#objetivo").val("").trigger("change");
+                    $("#iniciativa").val("").trigger("change");
+                    $("#form").submit();
+                });
+                $("#tema").change(function () {
+                    $("#objetivo").val("").trigger("change");
+                    $("#iniciativa").val("").trigger("change");
+                    $("#form").submit();
+                });
+                $("#objetivo").change(function () {
+                    $("#iniciativa").val("").trigger("change");
+                    $("#form").submit();
+                });
+                $("#iniciativa").change(function () {
+                    $("#form").submit();
+                });
+            })
+        </script>
+    </head>
+    <body class="controller-welcome action-index">
+        <div id="wrapper">
+            <div id="wrapper2">
+                <div id="wrapper3">
+                    <div id="top-menu">
+                        <ul><li><a class="home" href="/">Página inicial</a></li>
+                            <li><a class="projects" href="relatorios.php">Relatórios</a></li>
+                            <li><a class="projects" href="http://sisplan.tce.pa">SISPLAN</a></li>
+                            <li><a class="help" href="">Ajuda</a></li></ul></div>
+                    <div id="header">
+                        <h1>SISPLAN - Módulo de Relatórios</h1>
+                    </div>
+                    <div id="main" class="nosidebar">
+                        <div id="sidebar"></div>
+                        <div id="content">
+                            <h2>Detalhamento do Plano de Gestão</h2>
+                            <div id="login-form">
+                                <form id="form" action="#" method="post">
+                                    <table>
+                                        <tbody>
+                                            <tr>
+                                                <td style="text-align:right;"><label for="perspectiva">Perspectiva:</label></td>
+                                                <td style="text-align:left;">
+                                                    <select name="perspectiva"  class="perspectiva" id="perspectiva" style="width: 250px;">
+                                                        <option value=""> Selecione</option>
+                                                        <?php foreach ($v_perspectivas as $perspectiva) { ?>
+                                                            <option value="<?php echo $perspectiva["id"]; ?>" <?php echo (isset($_REQUEST['perspectiva']) && ($perspectiva["id"] == $_REQUEST['perspectiva'] ) ? "selected" : ""); ?>><?php echo $perspectiva["nome"]; ?></option>
+                                                        <?php } ?>
+                                                    </select>
+                                                </td>
+                                            </tr>
+                                            <tr id="linhaTema">
+                                                <td style="text-align:right;"><label for="tema">Tema:</label></td>
+                                                <td style="text-align:left;">
+                                                    <select name="tema"  class="tema" id="tema" style="width: 250px;">
+                                                        <option value=""> Selecione</option>
+                                                        <?php foreach ($v_temas as $tema) { ?>
+                                                            <option value="<?php echo $tema["id"]; ?>" <?php echo (isset($_REQUEST['tema']) && ($tema["id"] == $_REQUEST['tema'] ) ? "selected" : ""); ?>><?php echo $tema["nome"]; ?></option>
+                                                        <?php } ?>
+                                                    </select>
+                                            </tr>
+                                            <tr id="linhaObjetivo">
+                                                <td style="text-align:right;"><label for="objetivo">Objetivo:</label></td>
+                                                <td style="text-align:left;">
+                                                    <select name="objetivo"  class="objetivo" id="objetivo" style="width: 250px;">
+                                                        <option value=""> Selecione</option>
+                                                        <?php foreach ($v_objetivos as $objetivo) { ?>
+                                                            <option value="<?php echo $objetivo["id"]; ?>" <?php echo (isset($_REQUEST['objetivo']) && ($objetivo["id"] == $_REQUEST['objetivo'] ) ? "selected" : ""); ?>><?php echo $objetivo["nome"]; ?></option>
+                                                        <?php } ?>
+                                                    </select>    
+                                                </td>
+                                            </tr>
+                                            <tr id="linhaIniciativa">
+                                                <td style="text-align:right;"><label for="iniciativa">Iniciativa:</label></td>
+                                                <td style="text-align:left;">
+                                                    <select name="iniciativa"  class="iniciativa" id="iniciativa" style="width: 250px;">
+                                                        <option value=""> Selecione</option>
+                                                        <?php foreach ($v_iniciativas as $iniciativa) { ?>
+                                                            <option value="<?php echo $iniciativa["id"]; ?>" <?php echo (isset($_REQUEST['iniciativa']) && ($iniciativa["id"] == $_REQUEST['iniciativa'] ) ? "selected" : ""); ?>><?php echo $iniciativa["nome"]; ?></option>
+                                                        <?php } ?>
+                                                    </select>
+                                                </td>
+                                            </tr>
+                                            <tr id="linhaAcao">
+                                                <td style="text-align:right;"><label for="filtroacao">Ação:</label></td>
+                                                <td style="text-align:left;">
+                                                    <select name="filtroacao"  class="filtroacao" id="filtroacao" style="width: 250px;">
+                                                        <option value=""> Selecione</option>
+                                                        <?php foreach ($v_filtroacoes as $acao) { ?>
+                                                            <option value="<?php echo $acao["id"]; ?>" <?php echo (isset($_REQUEST['filtroacao']) && ($acao["id"] == $_REQUEST['filtroacao'] ) ? "selected" : ""); ?>><?php echo $acao["nome"]; ?></option>
+                                                        <?php } ?>
+                                                    </select>    
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td style="text-align:right;">
+                                                    <input type="submit"value="Enviar" name="btnEnviar">
+                                                    <input type="reset" value="Limpar">
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </form>
+                            </div>
+                            <?php
+                            $cabecalho = "";
+                            $cabecalho_anterior = "";
+                            foreach ($v_acoes AS $o_acoes) {
+                                $v_etapas = $o_acoes->getEtapas();
+                                ?>  
+                                <div style="clear:both;">
+                                    <?php
+                                    $perspectiva = utf8_encode($o_acoes->getPerspectiva_nome());
+                                    $nome = utf8_encode($o_acoes->getTema_nome());
+                                    $objetivo = utf8_encode($o_acoes->getObjetivo_nome());
+                                    $iniciativa = utf8_encode($o_acoes->getIniciativa_nome());
+
+                                    $cabecalho = <<<TCE
+                                    <p>
+                                        <strong>Perspectiva:</strong> $perspectiva <br>
+                                        <strong>Tema:</strong> $nome <br>
+                                        <strong>Objetivo:</strong> $objetivo <br>
+                                        <strong>Iniciativa:</strong> $iniciativa <br>
+                                    </p>
+TCE;
+                                    if ($cabecalho != $cabecalho_anterior) {
+                                        echo $cabecalho;
+                                        $cabecalho_anterior = $cabecalho;
+                                    }
+                                    ?>
+                                    <table align="left" style="width: 100%" border="1" class="list time-entries">
+                                        <thead>
+                                            <tr>
+                                                <th align="center" colspan="2">Ação</th>
+                                                <th align="center"><strong>Glossário</strong></th>
+                                                <th align="center"><strong>Produto</strong></th>
+                                                <th align="center"><strong>Qtd.</strong></th>
+                                                <th align="center"><strong>Prazo</strong></th>
+                                                <th align="center"><strong>Responsável</strong></th>
+                                            </tr>    
+                                        </thead>
+                                        <tbody>
+                                            <tr class="time-entry odd hascontextmenu">
+                                                <td align="center" style="width: 5%"><pre>A</pre><pre>Ç</pre><pre>Ã</pre><pre>O</pre></td>
+                                                <td class="issue"><?php echo utf8_encode($o_acoes->getAcao_nome()); ?></td>
+                                                <td class="issue"><?php echo utf8_encode($o_acoes->getAcao_glossario()); ?></td>
+                                                <td><?php echo utf8_encode($o_acoes->getAcao_produto()); ?></td>
+                                                <td><?php echo utf8_encode($o_acoes->getAcao_quantidade()); ?></td>
+                                                <td><?php echo utf8_encode($o_acoes->getAcao_prazo()); ?></td>
+                                                <td class="hours"><?php echo utf8_encode($o_acoes->getResponsavel_nome()); ?></td>
+                                            </tr>
+                                            <tr class="time-entry even hascontextmenu">
+                                                <td rowspan="<?php echo count($v_etapas); ?>" align="center"><pre>E</pre><pre>T</pre><pre>A</pre><pre>P</pre><pre>A</pre><pre>S</pre></td>
+    <?php
+    foreach ($v_etapas AS $etapa) {
+        ?>
+                                                    <td colspan="2" class="comments"><?php echo utf8_encode($etapa->getEtapa_nome()); ?></td>					
+                                                    <td><?php echo utf8_encode($etapa->getEtapa_produto()); ?></td>
+                                                    <td><?php echo utf8_encode($etapa->getEtapa_quantidade_programada()); ?></td>
+                                                    <td><?php echo utf8_encode($etapa->getEtapa_prazo()); ?></td>
+                                                    <td class="hours"><?php echo utf8_encode($etapa->getResponsavel_nome()); ?></td>
+                                                </tr>
+        <?php
+    }
+    ?>
+                                        </tbody>
+                                    </table>
+
+                                    <p class="pagination"><span class="items">&nbsp;</span> </p>
+                                </div>
+
+    <?php
+}
+?>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div id="footer">
+                <div class="bgl"><div class="bgr">
+                        Desenvolvido por SETIN-CSI. Tribunal de Contas do Estado do Pará - 2015 
+                    </div></div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

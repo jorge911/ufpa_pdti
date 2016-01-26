@@ -1,0 +1,278 @@
+﻿<?php
+$v_params = $this->getParams();
+$v_desempenhos = //new DesempenhoModel();
+        $v_params['v_desempenhos'];
+?>
+<!DOCTYPE html>
+<html lang="pt-BR">
+    <head>
+        <meta charset="utf-8" />
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+        <title>
+            Relatório de Desempenho
+        </title>        
+        <link rel="stylesheet" media="all" href="template/css/default.css" />
+        <script src='template/js/fullcalendar/lib/jquery.min.js'></script>
+        <script src='template/js/highcharts/highcharts.js'></script>
+        <script src='template/js/highcharts/lang/grid.js'></script>
+
+        <script>
+            $(document).ready(function () {
+                $('#container1').highcharts({
+                    chart: {
+                        type: 'column'
+                    },
+                    title: {
+                        text: 'Situação das Ações do <?php echo $v_desempenhos->getProjeto_nome(); ?> até <?php echo $v_desempenhos->getHoje(); ?>'
+                    },
+                    xAxis: {
+                        categories: ['Ações']
+                    },
+                    yAxis: {
+                        title: {
+                            text: 'Quantidade'
+                        }
+                    },
+                    series: [{
+                            name: 'Concluídas e Validadas',
+                            data: [<?php echo $v_desempenhos->getQtd_concluida_validada(); ?>]
+                        }, {
+                            name: 'Concluídas e Pendentes de Validação',
+                            data: [<?php echo $v_desempenhos->getQtd_concluida_pendente(); ?>]
+                        }, {
+                            name: 'Em Andamento',
+                            data: [<?php echo $v_desempenhos->getQtd_em_andamento(); ?>]
+                        }, {
+                            name: 'Não Iniciadas',
+                            data: [<?php echo $v_desempenhos->getQtd_nao_iniciadas(); ?>]
+                        }]
+                });
+                $('#container2').highcharts({
+                    chart: {
+                        type: 'column'
+                    },
+                    title: {
+                        text: 'Situação das Ações em Andamento do <?php echo $v_desempenhos->getProjeto_nome(); ?> até <?php echo $v_desempenhos->getHoje(); ?>'
+                    },
+                    xAxis: {
+                        categories: ['Ações em Andamento']
+                    },
+                    yAxis: {
+                        title: {
+                            text: 'Quantidade'
+                        }
+                    },
+                    series: [{
+                            name: 'Em Atraso',
+                            data: [<?php echo $v_desempenhos->getQtd_andamento_atraso(); ?>]
+                        }, {
+                            name: 'No Prazo',
+                            data: [<?php echo $v_desempenhos->getQtd_andamento_prazo(); ?>]
+                        }]
+                });
+                $('#container3').highcharts({
+                    chart: {
+                        type: 'column'
+                    },
+                    title: {
+                        text: 'Situação das Ações Não Iniciadas do <?php echo $v_desempenhos->getProjeto_nome(); ?> até <?php echo $v_desempenhos->getHoje(); ?>'
+                    },
+                    xAxis: {
+                        categories: ['Ações Não Iniciadas']
+                    },
+                    yAxis: {
+                        title: {
+                            text: 'Quantidade'
+                        }
+                    },
+                    series: [{
+                            name: 'Em Atraso',
+                            data: [<?php echo $v_desempenhos->getQtd_nao_iniciadas_atraso(); ?>]
+                        }, {
+                            name: 'No Prazo',
+                            data: [<?php echo $v_desempenhos->getQtd_nao_iniciadas_prazo(); ?>]
+                        }]
+                });
+
+
+                // Radialize the colors
+                Highcharts.getOptions().colors = Highcharts.map(Highcharts.getOptions().colors, function (color) {
+                    return {
+                        radialGradient: {cx: 0.5, cy: 0.3, r: 0.7},
+                        stops: [
+                            [0, color],
+                            [1, Highcharts.Color(color).brighten(-0.3).get('rgb')] // darken
+                        ]
+                    };
+                });
+
+                // Build the chart
+                $('#container11').highcharts({
+                    chart: {
+                        plotBackgroundColor: null,
+                        plotBorderWidth: null,
+                        plotShadow: false
+                    },
+                    title: {
+                        text: 'Situação das Ações do <?php echo $v_desempenhos->getProjeto_nome(); ?> até <?php echo $v_desempenhos->getHoje(); ?>'
+                    },
+                    tooltip: {
+                        pointFormat: '{series.name}: <b>{point.percentage:.1f}%</b>'
+                    },
+                    plotOptions: {
+                        pie: {
+                            allowPointSelect: true,
+                            cursor: 'pointer',
+                            dataLabels: {
+                                enabled: true,
+                                format: '<b>{point.name}</b>: {point.percentage:.1f} %',
+                                style: {
+                                    color: (Highcharts.theme && Highcharts.theme.contrastTextColor) || 'black'
+                                },
+                                connectorColor: 'silver'
+                            }
+                        }
+                    },
+                    series: [{
+                            type: 'pie',
+                            name: 'Ações',
+                            data: [
+                                ['Concluídas e Validadas', <?php echo ($v_desempenhos->getQtd_concluida_validada() * 100) / $v_desempenhos->getQtd_acoes(); ?>],
+                                ['Concluídas e Pendentes de Validação', <?php echo ($v_desempenhos->getQtd_concluida_pendente() * 100) / $v_desempenhos->getQtd_acoes(); ?>],
+                                ['Em Andamento', <?php echo ($v_desempenhos->getQtd_em_andamento() * 100) / $v_desempenhos->getQtd_acoes(); ?>],
+                                ['Não Iniciadas', <?php echo ($v_desempenhos->getQtd_nao_iniciadas() * 100) / $v_desempenhos->getQtd_acoes(); ?>]
+                            ]
+                        }]
+                });
+                $('#container22').highcharts({
+                    chart: {
+                        plotBackgroundColor: null,
+                        plotBorderWidth: null,
+                        plotShadow: false
+                    },
+                    title: {
+                        text: 'Situação das Ações em Andamento do <?php echo $v_desempenhos->getProjeto_nome(); ?> até <?php echo $v_desempenhos->getHoje(); ?>'
+                    },
+                    tooltip: {
+                        pointFormat: '{series.name}: <b>{point.percentage:.1f}%</b>'
+                    },
+                    plotOptions: {
+                        pie: {
+                            allowPointSelect: true,
+                            cursor: 'pointer',
+                            dataLabels: {
+                                enabled: true,
+                                format: '<b>{point.name}</b>: {point.percentage:.1f} %',
+                                style: {
+                                    color: (Highcharts.theme && Highcharts.theme.contrastTextColor) || 'black'
+                                },
+                                connectorColor: 'silver'
+                            }
+                        }
+                    },
+                    series: [{
+                            type: 'pie',
+                            name: 'Ações em Andamento',
+                            data: [
+                                ['Em Atraso', <?php echo ($v_desempenhos->getQtd_andamento_atraso() * 100) / ($v_desempenhos->getQtd_em_andamento()==0?1:$v_desempenhos->getQtd_em_andamento()); ?>],
+                                ['No Prazo', <?php echo ($v_desempenhos->getQtd_andamento_prazo() * 100) / ($v_desempenhos->getQtd_em_andamento()==0?1:$v_desempenhos->getQtd_em_andamento()); ?>]
+                            ]
+                        }]
+                });
+
+                $('#container33').highcharts({
+                    chart: {
+                        plotBackgroundColor: null,
+                        plotBorderWidth: null,
+                        plotShadow: false
+                    },
+                    title: {
+                        text: 'Situação das Ações Não Iniciadas do <?php echo $v_desempenhos->getProjeto_nome(); ?> até <?php echo $v_desempenhos->getHoje(); ?>'
+                    },
+                    tooltip: {
+                        pointFormat: '{series.name}: <b>{point.percentage:.1f}%</b>'
+                    },
+                    plotOptions: {
+                        pie: {
+                            allowPointSelect: true,
+                            cursor: 'pointer',
+                            dataLabels: {
+                                enabled: true,
+                                format: '<b>{point.name}</b>: {point.percentage:.1f} %',
+                                style: {
+                                    color: (Highcharts.theme && Highcharts.theme.contrastTextColor) || 'black'
+                                },
+                                connectorColor: 'silver'
+                            }
+                        }
+                    },
+                    series: [{
+                            type: 'pie',
+                            name: 'Ações Não Iniciadas',
+                            data: [
+                                ['Em Atraso', <?php echo ($v_desempenhos->getQtd_nao_iniciadas_atraso() * 100) / ($v_desempenhos->getQtd_nao_iniciadas()==0?1:$v_desempenhos->getQtd_nao_iniciadas()); ?>],
+                                ['No Prazo', <?php echo ($v_desempenhos->getQtd_nao_iniciadas_prazo() * 100) / ($v_desempenhos->getQtd_nao_iniciadas()==0?1:$v_desempenhos->getQtd_nao_iniciadas()); ?>]
+                            ]
+                        }]
+                });
+
+            })
+        </script>
+    </head>
+    <body class="controller-welcome action-index">
+        <div id="wrapper">
+            <div id="wrapper2">
+                <div id="wrapper3">
+                    <div id="top-menu">
+                        <ul><li><a class="home" href="/">Página inicial</a></li>
+                            <li><a class="projects" href="relatorios.php">Relatórios</a></li>
+                            <li><a class="projects" href="http://sisplan.tce.pa">SISPLAN</a></li>
+                            <li><a class="help" href="">Ajuda</a></li></ul></div>
+                    <div id="header">
+                        <h1>SISPLAN - Módulo de Relatórios</h1>
+                    </div>
+                    <div id="main" class="nosidebar">
+                        <div id="sidebar"></div>
+                        <div id="content">
+                            <h2>Quadro Resumo do Desempenho das Ações do <?php echo $v_desempenhos->getProjeto_nome(); ?></h2>
+
+                            <div class="flash notice" id="flash_notice">Das <strong><?php echo $v_desempenhos->getQtd_acoes(); ?></strong> ações constantes no <?php echo $v_desempenhos->getProjeto_nome(); ?>, até o dia <?php echo $v_desempenhos->getHoje(); ?>, <strong><?php echo $v_desempenhos->getQtd_concluida_validada(); ?></strong> estão concluídas e validadas, <strong><?php echo $v_desempenhos->getQtd_em_andamento(); ?></strong> estão em andamento, <strong><?php echo $v_desempenhos->getQtd_concluida_pendente(); ?></strong> estão concluídas e pendentes de validação e <strong><?php echo $v_desempenhos->getQtd_nao_iniciadas(); ?></strong> não foram iniciadas. Em termos percentuais e gráficos essa relação pode ser assim interpretada:</div>
+                            <div class="splitcontentleft">
+                                <div id="container1" style="width:100%; height:400px;" float></div>
+                            </div>
+                            <div class="splitcontentright">
+                                <div id="container11" style="min-width: 310px; height: 400px; max-width: 600px; margin: 0 auto"></div>
+                            </div>
+                            <div style="clear:both;"></div>
+
+                            <div class="flash notice" id="flash_notice">Das <strong><?php echo $v_desempenhos->getQtd_em_andamento(); ?></strong> ações em andamento, <strong><?php echo $v_desempenhos->getQtd_andamento_atraso(); ?></strong> estão em atraso e <strong><?php echo $v_desempenhos->getQtd_andamento_prazo(); ?></strong> estão dentro do prazo. Percentualmente e graficamente, estão assim representadas:</div>
+                            <div class="splitcontentleft">
+                                <div id="container2" style="width:100%; height:400px;"></div>
+                            </div>
+                            <div class="splitcontentright">
+                                <div id="container22" style="min-width: 310px; height: 400px; max-width: 600px; margin: 0 auto"></div>
+                            </div>
+                            <div style="clear:both;"></div>
+
+                            <div class="flash notice" id="flash_notice">Das <strong><?php echo $v_desempenhos->getQtd_nao_iniciadas(); ?></strong> ações não iniciadas, <strong><?php echo $v_desempenhos->getQtd_nao_iniciadas_atraso(); ?></strong> estão em atraso e <strong><?php echo $v_desempenhos->getQtd_nao_iniciadas_prazo(); ?></strong> estão dentro do prazo. Percentualmente e graficamente, estão assim representadas:</div>
+                            <div class="splitcontentleft">
+                                <div id="container3" style="width:100%; height:400px;"></div>
+                            </div>
+                            <div class="splitcontentright">
+                                <div id="container33" style="min-width: 310px; height: 400px; max-width: 600px; margin: 0 auto"></div>
+                            </div>
+                            <div style="clear:both;"></div>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div id="footer">
+                <div class="bgl"><div class="bgr">
+                        Desenvolvido por SETIN-CSI. Tribunal de Contas do Estado do Pará - 2015 
+                    </div></div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
